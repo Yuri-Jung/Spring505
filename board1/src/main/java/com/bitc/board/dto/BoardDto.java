@@ -10,6 +10,12 @@ import lombok.Setter;
 
 //@Data
 //이렇게 클래스를 넣는 이유 다양한 데이터 타입을 적은 용량으로 즐기기 위해서
+
+//@DTO(Data Transfer Objet)
+//데이터 전송 시 사용하기 위한 JAVA class 객체, db의 table과 매칭하는데 사용함.
+//dto 클래스의 멤버 변수는 매칭되는 db 테이블의 컬럼명과 동일하게 맞춰야 함.(대신 카멜명명법 방식으로) 이렇게 하면 맞춰서 데이터가져옴
+
+//데이터베이스와 일치시켜 주기 위해서. t_board2테이블과 자바에서의 데이터를 일치시켜주기 위해서 있는 페이지.
 @Getter
 @Setter
 public class BoardDto {
@@ -18,6 +24,7 @@ public class BoardDto {
     private String title;
     private String contents;
     private String userId;
+//    카멜명명법이 되어있다.
     private String pwd;
     private String createDt;
     private String updateDt;

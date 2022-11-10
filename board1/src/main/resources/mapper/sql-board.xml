@@ -7,6 +7,7 @@ sql-*은 sql-의 이름의 모든 파일명(getResources에 s 붙인이유가 �
 <!--namespace 속성에 지정한 패키지명을 가지고 있는 파일과 아래의 xml 구문을 연동한다는 의미-->
 <!--xml 파일이기 때문에 스프링 프로젝트의 전체 구조를 모르기 때문에 전체 패키지명을 다 입력해야 함!!!!(!아주 중요!!)-->
 <mapper namespace="com.bitc.board.mapper.BoardMapper">
+<!--    처음부터 완전하게 위치가 동일해야 매치된다.-->
 
 <!--    주의!! 세미콜론 다 빼야 한다.!!-->
 
@@ -18,6 +19,7 @@ sql-*은 sql-의 이름의 모든 파일명(getResources에 s 붙인이유가 �
 <!--    resultType : 지정한 메서드의 반환값, 자바 기본 타입은 그대로 입력 가능, 사용자가 지정한 데이터 타입은 xml 파일에서
         인식하지 못하기 때문에 전체 패키지 명을 다 입력해야 한다. -->
     <select id="selectBoardList" resultType="com.bitc.board.dto.BoardDto">
+<!--        id가 일치해야 하고(동일한 id사용 불가. 오버로딩불가.), -->
         <![CDATA[
         select idx, title, user_id, create_dt, hit_cnt from t_board2
         where deleted_yn = 'N'
@@ -34,18 +36,27 @@ sql-*은 sql-의 이름의 모든 파일명(getResources에 s 붙인이유가 �
 <!--상세글보기-->
 
     <select id="selectBoardDetail" parameterType="int" resultType="com.bitc.board.dto.BoardDto">
+<!--        com.bitc.board.dto.BoardDto - 패키지 전체 주소를 다 입력해줘야 한다.-->
         <![CDATA[
         select idx, title, contents, user_id, create_dt, hit_cnt from t_board2
-        where idx = #{idx};
---         jsp에서 getParameter(setString()) 대신 위에꺼 넣어줌
+        where idx = #{idx}
 ]]>
     </select>
 
 <!--    글 등록 페이지-->
+<!--    sql 쿼리문안에서 컬럼명이 각각 달라지는 이유-->
+<!--    1. db에서 사용하는 명명법과 자바에서 사용하는 명명법이 다름. db에서는 전부 소문자를 사용하고 단어 두개가 붙는다면 '-'을
+        사용하는 것이 기본.(snake 명명법) -->
+<!--    2. application.properties를 통해서 카멜 명명법을 사용한다고 설정-->
+<!--    3. parameterType, resultType에 java dto class를 사용한다고 설정했기 때문에 해당 클래스의 멤버 변수명을 사용-->
+<!--    4. mapper 파일에서 @Param 어노테이션을 사용하여 변수명을 설정할 경우 해당 변수명을 사용해야 함-->
     <insert id="insertBoard" parameterType="com.bitc.board.dto.BoardDto">
         <![CDATA[
         insert into t_board2 (title, contents, pwd, user_id, create_dt)
-        values (#{title}, #{contents},#{pwd}, #{userId}, now())
+--         쿼리문이기 때문에 쿼리문 그대로 사용해야 한다.
+        values (#{title}, #{contents},'1234', #{userId}, now())
+--          boardDto 타입에서 가져오기 때문에 그에 맞춰 자바형식으로 가져온다. 그렇지만 application.properties에 설정을 해놨기 때문에
+--          가능한 것이다.
 ]]>
     </insert>
 
