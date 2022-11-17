@@ -50,7 +50,13 @@ sql-*은 sql-의 이름의 모든 파일명(getResources에 s 붙인이유가 �
 <!--    2. application.properties를 통해서 카멜 명명법을 사용한다고 설정-->
 <!--    3. parameterType, resultType에 java dto class를 사용한다고 설정했기 때문에 해당 클래스의 멤버 변수명을 사용-->
 <!--    4. mapper 파일에서 @Param 어노테이션을 사용하여 변수명을 설정할 경우 해당 변수명을 사용해야 함-->
-    <insert id="insertBoard" parameterType="com.bitc.board.dto.BoardDto">
+
+
+    <!--    5교시 오후시간 추가!!!-->
+<!--    useGeneratedKeys : DBMS가 자동 키 생성을 지원할 경우 자동 키 생성을 사용하겠다는 의미-->
+<!--    keyProperty : 자동으로 생성된 키를 받아서 지정한 컬럼으로 되돌려 줌. useGeneratedKeys가 true가 되면 boardMapper.insertBoard(board); 로 간다(impl클래스)-->
+    <insert id="insertBoard" parameterType="com.bitc.board.dto.BoardDto" useGeneratedKeys="true" keyProperty="idx">
+<!--        idx는 boardDto클래스 타입에 있다.(get,set한 그 클래스)-->
         <![CDATA[
         insert into t_board2 (title, contents, pwd, user_id, create_dt)
 --         쿼리문이기 때문에 쿼리문 그대로 사용해야 한다.
@@ -76,10 +82,56 @@ sql-*은 sql-의 이름의 모든 파일명(getResources에 s 붙인이유가 �
     </update>
 
 <!--    조회수 올리기-->
+<!--    insertBoardFileList 메서드는 매개변수로 BoardFileDto 클래스 타입의 ArrayList를 받아서 사용함-->
+<!--    해당 리스트가 가지고 있는 모든 내용을 사용하기 위해서 foreach를 사용하여 반복실행해야 함-->
+<!--    collection : 매개변수로 사용하는 반복 가능한 객체의 타입을 설정. list, array만 사용가능-->
+<!--    item : collection을 통하여 생성되는 객체 변수명 설정. // 밑에 item 이름을 item이라고 설정해줌. 원하는대로 설정가능-->
+<!--    separator : 데이터의 구분자 설정, separator=","로 해놓은 건 여러 줄이 쉼표를 간격으로 쭉 반복된다. 쉼표로 구분됨-->
     <update id="updateHitCount" parameterType="int">
         <![CDATA[
         update t_board2 set hit_cnt = hit_cnt + 1
         where idx = #{idx}
         ]]>
     </update>
+<!--    5교시 주석해제 해줌-->
+    <insert id="insertBoardFileList" parameterType="com.bitc.board.dto.BoardFileDto">
+        <![CDATA[
+        INSERT INTO t_file
+            (board_idx, original_file_name, stored_file_path, file_size, create_id, create_date)
+        VALUES
+        ]]>
+            <foreach collection="list" item="item" separator=",">
+            (#{item.boardIdx}, #{item.originalFileName}, #{item.storedFilePath},#{item.fileSize} , 'admin', NOW())
+            </foreach>
+    </insert>
+<!--    추가-->
+    <select id="selectBoardFileList" resultType="com.bitc.board.dto.BoardFileDto">
+        <![CDATA[
+            SELECT
+                idx, board_idx, original_file_name,
+                FORMAT(ROUND(file_size/1024),0) AS file_size
+--             AS는 파일 이름 다시 지정해줌.
+            FROM
+                t_file
+            WHERE
+                board_idx = #{boardIdx}
+            AND
+                deleted_yn = 'N'
+        ]]>
+    </select>
+<select id="selectBoardFileInfo" parameterType="map" resultType="com.bitc.board.dto.BoardFileDto">
+    <![CDATA[
+        SELECT
+        original_file_name, stored_file_path, file_size
+        FROM
+            t_file
+        where
+            idx = #{idx}
+        and
+            board_idx = #{boardIdx}
+        and
+            deleted_yn = 'N'
+]]>
+</select>
+
 </mapper>

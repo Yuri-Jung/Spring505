@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 //@Data : lombok 라이브러리에서 지원하는 어노테이션으로 해당 클래스의 멤버 변수에 대한 getter/setter/toString() 메서드를
 // 자동으로 생성하는 어노테이션.@Getter, @Setter , @ToString 어노테이션을 모두 사용할 효과. @Data = @Getter + @Setter + @ToString
 // 한번 씩 @Data만 입력하면 작동이 잘 안 될 때가 종종 있다. 그럴 때는 @Getter, @Setter , @ToString입력하면 된다.
@@ -20,6 +22,7 @@ import lombok.Setter;
 @Setter
 public class BoardDto {
 //    컬럼명 그대로, _없애고 첫번째 문자 대문자로 해줘야 하고 개수 그대로 다 넣어야 한다.
+//    첨부된 파일 정보가 없기 때문에 추가한다.
     private int idx;
     private String title;
     private String contents;
@@ -29,4 +32,6 @@ public class BoardDto {
     private String createDt;
     private String updateDt;
     private int hitCnt;
+    private List<BoardFileDto> fileList;
+//    이 리스트로 데이터를 받아 넘겨줄 것임/
 }
