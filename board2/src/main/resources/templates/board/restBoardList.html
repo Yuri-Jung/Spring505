@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8 " >
+    <title>Rest 게시판 목록</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<header th:replace="layout/header :: mainHeader">
+
+</header>
+<main class="container my-4">
+    <section>
+        <div class="row">
+            <div class="col-sm">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                       <td>글번호</td>
+                       <td>제목</td>
+                       <td>글쓴이</td>
+                       <td>등록날짜</td>
+                       <td>조회수</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.size(boardList)} >0" th:each="item : ${boardList}">
+                        <td th:text = "${item.idx}">글번호</td>
+                        <td>
+                        <a href="/board/" th:attrappend="href=${item.idx}" th:text="${item.title}"
+                        class="text-decoration-none">제목</a>
+                        </td>
+                        <td th:text = "${item.userId}">글쓴이</td>
+                        <td th:text = "${item.createDt}">등록날짜</td>
+                        <td th:text = "${item.hitCnt}">조회수</td>
+                    </tr>
+                    <tr th:unless="${#lists.size(boardList)}">
+                        <td colspan="5">조회된 내용이 없습니다.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm d-flex justify-content-end">
+                <a href="/board/write" class="btn btn-primary">글쓰기</a>
+            </div>
+        </div>
+    </section>
+</main>
+<footer th:replace="layout/footer :: mainFooter">
+
+</footer>
+
+
+</body>
+</html>
