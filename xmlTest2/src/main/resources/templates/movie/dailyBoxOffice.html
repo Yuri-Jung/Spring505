@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>dlfdlf </title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $("#btn-ok").on("click", function() {
+
+        $.ajax({
+          url:"/movie/dailyBoxOfficeJson",
+          type : "post",
+          success : function(data) {
+            if(data.length>0){
+              $("#openApiTable tbody").empty(); //이거 넣으면 첫 번째 줄 내용 없습니다 사라짐
+              for (let i = 0; i<data.length; i++){
+                let result = "<tr>";
+                result += "<td>" + data[i].rank + "</td>"
+                result += "<td>" + data[i].movieNm + "</td>"
+                result += "<td>" + data[i].openDt + "</td>"
+                result += "<td>" + data[i].audiCnt + "</td>"
+                result += "<td>" + data[i].audiAcc + "</td>"
+                result += "</tr>"
+
+                $("#openApiTable").append(result);
+              }
+            }
+          },
+          error: function() {
+            alert("통신 시 오류가 발생했습니다");
+          }
+        })
+      });
+    });
+  </script>
+
+</head>
+<body>
+<div class="container mt-5 p-5">
+  <div>
+    <h1 class="text-center">일일 오피스 정보</h1>
+  </div>
+  <div class="row">
+    <div class="col-sm">
+      <table class="table table-hover table-striped" id="openApiTable">
+        <thead>
+        <tr>
+          <th>인기순위</th>
+          <th>영화이름</th>
+          <th>개봉일</th>
+          <th>당일 관람객</th>
+          <th>종료시간</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td colspan="5">조회된 내용이 없습니다</td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="d-flex justify-content-end me-3">
+<!--        <input type="text" id="box1" class="me-5"> &lt;!&ndash;페이지선택&ndash;&gt;-->
+<!--        <select class="form-control" id="box2">&lt;!&ndash;보이는 row 선택&ndash;&gt;-->
+<!--          <option value="" selected>선택하세요</option>-->
+<!--          <option value="10" >10</option>-->
+<!--          <option value="20">20</option>-->
+<!--          <option value="30" >30</option>-->
+<!--        </select>-->
+        <!--        //이 아이디로 해당 데이터 가져오기 컨트롤러 requestparam으로 가져온다.-->
+        <button type="button" class="btn btn-primary" id="btn-ok">불러오기</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>전국 약국 정보</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        $("#btn-ok").on("click", function() {
+            const box1Val = $('#box1').val();
+            const box2Val = $('#box2 option:selected').val();
+            // console.log(box1Val);
+            // console.log(box2Val);
+
+            $.ajax({
+            url:"/pharmacy/fullDataUrl",
+            type : "post",
+            data: {box1: box1Val, box2: box2Val},
+            success : function(data) {
+              if(data.length>0){
+                $("#openApiTable tbody").empty(); //이거 넣으면 첫 번째 줄 내용 없습니다 사라짐
+                for (let i = 0; i<data.length; i++){
+                  let result = "<tr>";
+                  result += "<td>" + data[i].dutyName + "</td>"
+                  result += "<td>" + data[i].dutyTel1 + "</td>"
+                  result += "<td>" + data[i].dutyAddr + "</td>"
+                  result += "<td>" + data[i].dutyTime1s + "</td>"
+                  result += "<td>" + data[i].dutyTime1c + "</td>"
+                  result += "</tr>"
+
+                  $("#openApiTable").append(result);
+                }
+              }
+            },
+            error: function() {
+                alert("통신 시 오류가 발생했습니다");
+            }
+          })
+        });
+    });
+  </script>
+<!--  <script>-->
+<!--    //모든 페이지가 요청이 되었을 때-->
+<!--    $(document).ready(function() {-->
+<!--      // ID를 alpreah_input로 가지는 곳에서 키를 누를 경우-->
+<!--      $("#pages").keydown(function(key) {-->
+<!--        //키의 코드가 13번일 경우 (13번은 엔터키)-->
+<!--        if (key.keyCode == 13) {-->
+
+<!--          var pp = $('form input[pp=pages]').val();-->
+<!--          // alert(id);-->
+<!--        }-->
+<!--      });-->
+<!--    });-->
+
+<!--  </script>-->
+</head>
+<body>
+<div class="container mt-5 p-5">
+  <div>
+    <h1 class="text-center">전국 약국 정보(open api 사용)</h1>
+  </div>
+  <div class="row">
+    <div class="col-sm">
+      <table class="table table-hover table-striped" id="openApiTable">
+        <thead>
+        <tr>
+          <th>상호명</th>
+          <th>전화번호</th>
+          <th>주소</th>
+          <th>시작시간</th>
+          <th>종료시간</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="5">조회된 내용이 없습니다</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="d-flex justify-content-end me-3">
+        <input type="text" id="box1" class="me-5"> <!--페이지선택-->
+        <select class="form-control" id="box2"><!--보이는 row 선택-->
+          <option value="" selected>선택하세요</option>
+          <option value="10" >10</option>
+          <option value="20">20</option>
+          <option value="30" >30</option>
+        </select>
+<!--        //이 아이디로 해당 데이터 가져오기 컨트롤러 requestparam으로 가져온다.-->
+        <button type="button" class="btn btn-primary" id="btn-ok">불러오기</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
